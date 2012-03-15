@@ -1,33 +1,72 @@
 package my.app.android.softkeyboard;
 
 import android.inputmethodservice.InputMethodService;
-import android.inputmethodservice.Keyboard;
-import android.inputmethodservice.KeyboardView;
 import android.inputmethodservice.KeyboardView.OnKeyboardActionListener;
-import android.os.Bundle;
-import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnKeyListener;
 import android.view.ViewGroup.LayoutParams;
-import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.ExtractedText;
-import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import android.content.res.AssetManager;
+
+
+/*
+import android.inputmethodservice.Keyboard;
+import android.inputmethodservice.KeyboardView;
+
+import android.os.Bundle;
+import android.view.Gravity;
+import android.view.KeyEvent;
+
+import android.view.View.OnKeyListener;
+
+import android.view.inputmethod.CompletionInfo;
+
+import android.view.inputmethod.ExtractedText;
+import android.view.inputmethod.ExtractedTextRequest;
+*/
+	
 public class SoftKeyboard extends InputMethodService implements OnKeyboardActionListener{
 	@Override public void onCreate() {
         super.onCreate();
+      //將模組存至應用程式資料夾	
+      		AssetManager assetManager = getAssets();
+              InputStream inputStream = null;
+      		
+              try {
+                  // 指定/assets/handwriting-ja.model
+             inputStream = assetManager.open("handwriting-ja.model");
+             
+                 byte[] bytes = new byte[4096];
+             
+             int len = -1;
+             		//開新檔案在應用程式資料夾
+             File file = new File(this.getFilesDir(),"handwriting-ja.model");
+             FileOutputStream outputStream = new FileOutputStream(file);
+             
+             while ((len = inputStream.read(bytes)) != -1){
+             	outputStream.write(bytes, 0, len);
+             }
+             
+             inputStream.close();
+             outputStream.close();
+             
+            } catch (IOException e) {
+             // TODO Auto-generated catch block
+             e.printStackTrace();
+            }   
     }
 	@Override public void onInitializeInterface() {
 		 super.onInitializeInterface();
 	}
-	
 	LinearLayout layout;
 	my.app.zinnia.InputView draw;
 	my.app.zinnia.CandidateCharacter character;
@@ -136,4 +175,9 @@ public class SoftKeyboard extends InputMethodService implements OnKeyboardAction
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
+	
+	
+	
 }
